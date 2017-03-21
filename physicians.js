@@ -30,6 +30,7 @@ define([
 
         //selecting option
         $(document).on("click", ".results-page div.filter-options a", function(e){
+          e.preventDefault();
     			e.stopPropagation();
     			$(this).parent("ul").find("li").removeClass("active");
     			$(this).parent().addClass("active");
@@ -246,7 +247,6 @@ define([
             currentPage = currentPage + 1;
             runSearch();
             e.preventDefault ? e.preventDefault() : e.returnValue = false;
-
         });
 
         $(".landing-page #area").autocomplete({
@@ -264,7 +264,6 @@ define([
         						value: item.data.CITY
         					  }
         					});
-
         					response(zipcodes);
         				}
         				else{
@@ -280,7 +279,6 @@ define([
           							value: item.data.ZIP
           						  }
           						});
-
           						response(zipcodes);
         					  }
         					});
@@ -425,9 +423,9 @@ define([
             else
             {
           		  $("#distance-group").hide();
-                $("#a-z").prop("checked","checked");
+                //$("#a-z").prop("checked","checked");
                 $("#distance").prop("checked","");
-                updateQuery("sort", "az");
+                //updateQuery("sort", "az");
       			}
         });
 
@@ -485,53 +483,53 @@ define([
     			}
     		});
 
-		Handlebars.registerHelper("displayLocations", function (locations){
+    		Handlebars.registerHelper("displayLocations", function (locations){
 
-			var output = "<div class='col-xs-8'><ul>";
-			var dists = "<div class='col-xs-4'><ul class='miles'>";
+    			var output = "<div class='col-xs-8'><ul>";
+    			var dists = "<div class='col-xs-4'><ul class='miles'>";
 
 
-			var cities = { "locations": [] };
+    			var cities = { "locations": [] };
 
-			for(ct = 0; ct < locations.length; ct++){
-				if (locations[ct].NAME != locations[ct].PHONE){
-					if(locations[ct].DISTANCE != null){
-						output = output + "<li>" + locations[ct].CITY + ", GA</li>"
-						if(Math.round(locations[ct].DISTANCE) == 1){
-							dists = dists + "<li><span>"+Math.round(locations[ct].DISTANCE)+" mile</span></li>";
-						}
-						else{
-							dists = dists + "<li><span>"+Math.round(locations[ct].DISTANCE)+" miles</span></li>";
-						}
-					} else {
-						var found = 0;
+    			for(ct = 0; ct < locations.length; ct++){
+    				if (locations[ct].NAME != locations[ct].PHONE){
+    					if(locations[ct].DISTANCE != null){
+    						output = output + "<li>" + locations[ct].CITY + ", GA</li>"
+    						if(Math.round(locations[ct].DISTANCE) == 1){
+    							dists = dists + "<li><span>"+Math.round(locations[ct].DISTANCE)+" mile</span></li>";
+    						}
+    						else{
+    							dists = dists + "<li><span>"+Math.round(locations[ct].DISTANCE)+" miles</span></li>";
+    						}
+    					} else {
+    						var found = 0;
 
-						$.each(cities.locations, function(){
-							if (this.name == locations[ct].CITY){
-								this.count = this.count + 1;
-								found = 1;
-							}
-						});
+    						$.each(cities.locations, function(){
+    							if (this.name == locations[ct].CITY){
+    								this.count = this.count + 1;
+    								found = 1;
+    							}
+    						});
 
-						if (!found)
-							cities.locations.push({name: locations[ct].CITY, count: 1});
+    						if (!found)
+    							cities.locations.push({name: locations[ct].CITY, count: 1});
 
-						dists = dists + "<li>&nbsp;</li>";
-					}
-				}
-			}
+    						dists = dists + "<li>&nbsp;</li>";
+    					}
+    				}
+    			}
 
-			$.each(cities.locations, function(){
-				if (this.count > 1)
-					output = output + "<li>" + this.name + ", GA (" + this.count + " locations)</li>";
-				else
-					output = output + "<li>" + this.name + ", GA</li>"
-			});
+    			$.each(cities.locations, function(){
+    				if (this.count > 1)
+    					output = output + "<li>" + this.name + ", GA (" + this.count + " locations)</li>";
+    				else
+    					output = output + "<li>" + this.name + ", GA</li>"
+    			});
 
-			output = output + "</ul></div>" + dists + "</ul></div>"
+    			output = output + "</ul></div>" + dists + "</ul></div>"
 
-			return new Handlebars.SafeString(output);
-		});
+    			return new Handlebars.SafeString(output);
+    		});
 
         Handlebars.registerHelper("displayNumber", function (location){
     			if(location.length > 0){
@@ -571,18 +569,18 @@ define([
     		});
 
         Handlebars.registerHelper("displayPrimary", function (specialties){
-        		for(ct = 0; ct < specialties.length; ct++){
-    				if(specialties[ct].ISPRIMARY == "Y"){
-    					if(specialties[ct].NAME == "Primary Care")
-    					{
-    						return "Primary Care Physician";
-    					}
-    					else{
-    						return specialties[ct].NAME;
-    					}
-    				}
-    			}
-    		});
+          for(ct = 0; ct < specialties.length; ct++){
+            if(specialties[ct].ISPRIMARY == "Y"){
+              if(specialties[ct].NAME == "Primary Care") {
+                return "Primary Care Physician";
+              }
+              else
+              {
+                return specialties[ct].NAME;
+              }
+            }
+          }
+        });
 
         Handlebars.registerHelper("displaySpecialty", function (specialties){
   		    var arrPrimary = [];
@@ -629,8 +627,6 @@ define([
         }
 
         function checkSearchCriteria(){
-            var criteriaSelected = false;
-
             if ($("#area").val() != "" || $("#fname").val() != "" || $("#lname").val() != ""
                 || $("#photo").is(":checked") || $("#clinic").is(":checked") || $("#filter-by-faculty").is(":checked")
                 || $("#male").is(":checked") || $("#female").is(":checked")
@@ -1200,7 +1196,6 @@ define([
           });
         }
       });
-      console.log(qstring);
       window.history.pushState(null,$(document).find("title").text(), window.location.href.split('?')[0] + qstring);
     };
 
